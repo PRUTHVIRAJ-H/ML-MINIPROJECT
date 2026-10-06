@@ -1,8 +1,13 @@
-import pandas as pd
+from pathlib import Path
+
 import nltk
+import pandas as pd
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
-#nltk.download(['punkt','averaged_perceptron_tagger','vader_lexicon','stopwords','wordnet'])
-pd.options.mode.chained_assignment = None
+
+print("\n" + "=" * 72)
+print("STAGE 2/3: FEATURE ENGINEERING")
+print("=" * 72)
+print("Loading cleaned reviews from data/filtered_reviews.csv...")
 
 # read review data
 dat = pd.read_csv("data/filtered_reviews.csv")
@@ -64,7 +69,14 @@ dat["tokenized_words"] = dat["tokenized_words"].apply(lambda review: [word for w
 wnl = nltk.stem.wordnet.WordNetLemmatizer()
 dat["tokenized_words"] = dat["tokenized_words"].apply(lambda review: [wnl.lemmatize(word) for word in review])
 
-data = data[["popular","user_reviews","days_since_review","user_rating","rating_diff","num_words","avg_word_len","avg_sent_len","pct_verbs","pct_nouns","pct_adj","quote","sentiment","tokenized_words"]]
+dat = dat[["popular","user_reviews","days_since_review","user_rating","rating_diff","num_words","avg_word_len","avg_sent_len","pct_verbs","pct_nouns","pct_adj","quote","sentiment","tokenized_words"]]
 
 # save dataset
-dat.to_csv("tokenized_reviews.csv", index=False)
+Path("data").mkdir(exist_ok=True)
+dat.to_csv("data/tokenized_reviews.csv", index=False)
+print(
+    f"Created {len(dat.columns) - 1} engineered columns "
+    f"(including tokenized text) for {len(dat):,} reviews."
+)
+print("Saved engineered data to data/tokenized_reviews.csv")
+print("Feature engineering completed successfully.")

@@ -1,7 +1,14 @@
 import json
+from pathlib import Path
+
 import pandas as pd
 import numpy as np
 import fasttext
+
+print("\n" + "=" * 72)
+print("STAGE 1/3: DATA PREPARATION")
+print("=" * 72)
+print("Reading Goodreads reviews and books...")
 
 review_path = "data/goodreads_reviews_dedup.json"
 book_path = "data/goodreads_books.json"
@@ -39,7 +46,7 @@ with open(book_path) as f:
         try:
             if int(entry['text_reviews_count']) >= 10:
                 books.append(entry)
-        except:
+        except (TypeError, ValueError):
             print("error for text reviews count value: ", entry['text_reviews_count'])
 
 print("total_books: ", total_books)
@@ -78,7 +85,12 @@ dat = dat.iloc[keep_ind,].reset_index(drop=True)
 print("english reviews: ", len(dat))
 
 # create days since added column
-review_dates = pd.to_datetime(pd.to_datetime(dat["date_added"],format='%a %b %d %H:%M:%S %z %Y',errors='coerce'),utc=True,errors='coerce')
+review_dates = pd.to_datetime(
+    dat["date_added"],
+    format="%a %b %d %H:%M:%S %z %Y",
+    errors="coerce",
+    utc=True,
+)
 dat["days_since_review"] = (max(review_dates) - review_dates).dt.days
 
 # add user_reviews column
@@ -90,4 +102,7 @@ dat = dat[["book_id", "user_reviews", "user_rating", "avg_rating", "ratings_coun
 print("final length: ", len(dat))
 
 # save dataset
-dat.to_csv("filtered_reviews.csv", index=False)
+Path("data").mkdir(exist_ok=True)
+dat.to_csv("data/filtered_reviews.csv", index=False)
+print("Saved cleaned data to data/filtered_reviews.csv")
+print("Data preparation completed successfully.")
