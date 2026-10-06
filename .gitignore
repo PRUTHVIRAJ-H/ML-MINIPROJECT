@@ -1,6 +1,7 @@
 data/
 images/
 logs/
+reports/
 *.pdf
 *.bin
 *.log

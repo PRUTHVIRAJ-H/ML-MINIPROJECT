@@ -14,7 +14,18 @@ bash start.sh
 
 This one command creates the virtual environment, installs all requirements,
 downloads the required NLTK resources, prepares the data, creates the
-features, trains the model, and displays the evaluation results.
+features, trains the model, and creates one complete HTML results report.
+
+After the command finishes, open:
+
+```text
+reports/index.html
+```
+
+The report works offline and includes the headline metrics, full
+classification table, confusion-matrix graph, ROC curve, and feature-influence
+graph. Terminal output is kept short so the HTML report is the single place to
+review results.
 
 The script creates these local files automatically:
 
@@ -139,7 +150,7 @@ Raw Goodreads JSON + FastText model
           train_model.py
                  |
                  v
- Classification report, confusion matrix, ROC-AUC
+       reports/index.html
 ```
 
 See [architecture.md](./architecture.md) for the detailed architecture
@@ -191,17 +202,24 @@ python code/features.py
 python code/train_model.py
 ```
 
+The final command writes `reports/index.html`.
+
 ## 9. Output and evaluation
 
-`train_model.py` prints:
+`train_model.py` creates:
 
-- number of training and test rows
-- precision, recall, and F1-score
-- confusion matrix
-- ROC-AUC
+- metric cards for accuracy, ROC-AUC, precision, recall, and F1-score
+- a precision/recall/F1 classification table
+- a confusion matrix graph
+- a ROC curve graph
+- a feature-influence graph based on model coefficients
 
-The pipeline was verified successfully with `bash start.sh` using the
-official poetry subset:
+It also prints a compact summary for command-line users. The generated HTML
+contains embedded images, so it can be copied or opened without any other
+project files.
+
+The pipeline was verified successfully with `bash start.sh` using the official
+poetry subset:
 
 ```text
 Usable reviews: 9,663

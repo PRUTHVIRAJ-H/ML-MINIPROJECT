@@ -8,8 +8,11 @@ bash start.sh
 
 The script creates `.venv`, installs `requirements.txt`, downloads the NLTK
 resources, downloads the official poetry subset and FastText model when
-needed, runs the complete pipeline, and prints the classification report,
-confusion matrix, and ROC-AUC. The first run downloads approximately 350 MB.
+needed, runs the complete pipeline, and creates a single HTML report. The
+first run downloads approximately 350 MB.
+
+Open `reports/index.html` after the command completes. It contains all metrics
+and graphs in one self-contained view.
 
 ## Required input files
 

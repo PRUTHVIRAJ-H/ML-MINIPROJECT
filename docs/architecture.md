@@ -32,7 +32,7 @@ code/train_model.py
   - prints evaluation metrics
         |
         v
-Classification report, confusion matrix, and ROC-AUC
+     reports/index.html
 ```
 
 ## Components
@@ -53,9 +53,10 @@ target and model-ready features.
 
 ### Model and evaluation
 
-`code/train_model.py` uses a scikit-learn pipeline. `StandardScaler` normalizes the
-numeric inputs, and balanced `LogisticRegression` predicts the two classes.
-The test set is held out until the final evaluation.
+`code/train_model.py` uses a scikit-learn pipeline. `StandardScaler` normalizes
+the numeric inputs, and balanced `LogisticRegression` predicts the two
+classes. The test set is held out until the final evaluation. The same stage
+renders all metrics and graphs into the self-contained HTML report.
 
 ## Reproducibility
 

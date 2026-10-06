@@ -101,3 +101,4 @@ step "Training and evaluating the model"
 python code/train_model.py
 
 printf "\n\033[1;32mProject completed successfully.\033[0m\n"
+printf "Open the complete results here: %s/reports/index.html\n" "$PROJECT_DIR"
