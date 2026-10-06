@@ -1,8 +1,5 @@
 # Project architecture
 
-The project is a small, sequential machine-learning pipeline. Each stage
-produces the input required by the next stage.
-
 ```text
 Raw Goodreads data
         |
@@ -13,7 +10,7 @@ code/data_prep.py
   - creates the popular/unpopular target
         |
         v
-data/filtered_reviews.csv
+data/filtered_reviews.csv(stored in this folder)
         |
         v
 code/features.py
@@ -21,7 +18,7 @@ code/features.py
   - tokenizes and cleans review text
         |
         v
-data/tokenized_reviews.csv
+data/tokenized_reviews.csv(stored in this folder)
         |
         v
 code/train_model.py
