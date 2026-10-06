@@ -4,16 +4,12 @@ Machine Learning Mini-Project — UE24CS352A
 
 ## Run the complete project with one command
 
-The teacher can run the entire project from the repository root with one
-command. The startup script downloads the official poetry subset automatically
-on the first run:
-
 ```bash
 bash start.sh
 ```
 
-This one command creates the virtual environment, installs all requirements,
-downloads the required NLTK resources, prepares the data, creates the
+This one command creates the virtual environment(for python), installs all requirements,
+downloads the required NLTK resources(the book reviews data), prepares the data, creates the
 features, trains the model, and creates one complete HTML results report.
 
 After the command finishes, open:
@@ -22,12 +18,11 @@ After the command finishes, open:
 reports/index.html
 ```
 
-The report works offline and includes the headline metrics, full
+The report includes the headline metrics, full
 classification table, confusion-matrix graph, ROC curve, and feature-influence
-graph. Terminal output is kept short so the HTML report is the single place to
-review results.
+graph.
 
-The script creates these local files automatically:
+The script creates these local data files automatically:
 
 ```text
 data/goodreads_reviews_dedup.json
@@ -89,9 +84,11 @@ for the exact file locations.
 
 1. Reads the raw review and book JSON files.
 2. Keeps reviews with at least one like or comment.
+
 3. Keeps books with at least ten reviews.
 4. Keeps books with at least 60 total review likes/comments.
 5. Filters for English reviews.
+
 6. Calculates each review's share of its book's engagement.
 7. Creates the `popular` target using the 2% threshold.
 
@@ -121,13 +118,56 @@ The final model is a balanced logistic-regression classifier.
 1. The data is divided into 85% training and 15% testing data.
 2. The split is stratified so both classes are represented consistently.
 3. Features are standardized with `StandardScaler`.
+
 4. Logistic regression predicts the probability of popularity.
 5. `class_weight="balanced"` gives appropriate importance to both classes.
+
 6. The model is evaluated only on the held-out test set.
 
 Logistic regression was selected because it is appropriate for a binary
 target, trains quickly, is reproducible, and is easy to explain during the
 review. The fixed random seed is `229`.
+
+### What logistic regression is learning
+
+This is **supervised binary classification**: the training data contains both
+the review features and the correct answer (`0` for unpopular, `1` for
+popular). Logistic regression is a **parametric, discriminative** model. It
+learns one weight for each feature and a bias:
+
+```text
+z = b + w1*x1 + w2*x2 + ... + wn*xn
+p(popular) = 1 / (1 + e^(-z))
+```
+
+The sigmoid function converts the linear score into a probability between 0
+and 1. During training, scikit-learn chooses the weights that minimize binary
+cross-entropy (also called log loss), together with L2 regularization from the
+default solver. A probability of at least 0.5 is predicted as popular. The
+decision boundary is linear; the model is not learning a collection of rules
+or memorizing individual reviews.
+
+`StandardScaler` is applied before the logistic-regression step so features
+with different units can contribute fairly. `class_weight="balanced"` gives
+the less frequent popular class appropriate importance.
+
+### Training versus testing
+
+- **Training:** the model reads the 85% training rows, adjusts its weights,
+  and minimizes the loss. Training time is the time spent in `model.fit(...)`.
+- **Testing:** the model receives the untouched 15% test rows and applies the
+  learned weights to make predictions. Testing time is the time spent in
+  `predict(...)` and `predict_proba(...)`; no weights are changed.
+- **Evaluation:** metrics such as precision, recall, F1-score, confusion
+  matrix, and ROC-AUC compare predictions with the known test labels. This is
+  separate from testing inference time.
+
+The HTML report displays all three timings. For each unseen review, testing
+responds with both a predicted class and a probability of being popular.
+Testing is normally faster than training because prediction only performs the
+learned calculation; it does not search for model parameters. The report's
+metric-calculation time is separate from prediction time because it compares
+the predictions with the known test labels.
 
 ## 6. Project architecture
 
@@ -213,6 +253,9 @@ The final command writes `reports/index.html`.
 - a confusion matrix graph
 - a ROC curve graph
 - a feature-influence graph based on model coefficients
+- training, testing, and evaluation timings
+- a plain-language explanation of the learning type, sigmoid function, and
+  train/test difference
 
 It also prints a compact summary for command-line users. The generated HTML
 contains embedded images, so it can be copied or opened without any other
